@@ -1,0 +1,103 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1 style="text-align:center;">Log Dashboard</h1>
+  <p style="text-align:center;">Welcome to Log Dashboard</p>
+  
+  <div id="container1" style="width:49%; height:300px; margin-bottom:30px; float:left;"></div>
+  <div id="container2" style="width:49%; height:300px; margin-bottom:30px; float:left;"></div>
+  <div id="table-container" style="width:98%; margin-top: 100px; margin-bottom:100px;">
+    
+    <table class="table">
+        <caption style="caption-side:top; text-align:center; font-size:30px; color:cornflowerblue"> Latest Logs </caption>
+        <tr>
+            <th>Date</th>
+            <th>Category</th> 
+            <th>Message</th>
+        </tr>
+        {% for line in tabledata %}
+        <tr>
+            <td>{{line.datetime}}</td>
+            <td>{{line.category}}</td>
+            <td>{{line.message}}</td>        
+        </tr>
+        {% endfor %}
+        </table>
+  </div>
+
+<script>
+
+// function loadFunct(){
+//                var products = JSON.parse('{{x_c1|safe}}');
+//                alert(products);
+//               }
+ 
+  document.addEventListener('DOMContentLoaded', function () {
+        // loadFunct();
+        const chartone = Highcharts.chart('container1', {
+            chart: {
+                type: 'line',
+                scrollablePlotArea: {
+                    minWidth: 2500,
+                    scrollPositionX: 1
+                }
+            },
+            title: {
+                text: 'Log Count per DateTime'
+            },
+            xAxis: {
+              categories: JSON.parse('{{x_c1|safe}}'),
+            },
+            yAxis: {
+                title: {
+                    text: 'Logs Count'
+                }
+            },
+            series: [ {
+                name: 'Log Count',
+                data: JSON.parse('{{y_c1|safe}}') //prepare this list
+            }]
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let piedata = JSON.parse('{{piedata|safe}}');
+        console.log(piedata);
+        const charttwo = Highcharts.chart('container2', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie'
+            },
+            title: {
+                text: 'Log Count per Category'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                    }
+                }
+            },
+            series: [{
+                name: 'Logs Count',
+                colorByPoint: true,
+                data: piedata, //array of js objects with name, y, slices, selected attributes 
+            }]
+        });
+    });
+</script>
+
+{% endblock %}
