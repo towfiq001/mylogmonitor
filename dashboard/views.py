@@ -14,8 +14,7 @@ def index(request):
     num_logs = LogHistory.objects.count()
     chart_one = LogHistory.objects.values('datetime').annotate(Count('id')).order_by('datetime')
     chart_two = LogHistory.objects.values('category').annotate(Count('id')).order_by('category')
-    table_data = LogHistory.objects.order_by('datetime')
-    table_data = table_data[len(table_data)-10: len(table_data)]
+    table_data = LogHistory.objects.order_by('-datetime')[:10]
 
     # num_logs = LogByDate.objects.count()
     # chart_one = LogByDate.objects.values('date').annotate(Count('id'))
